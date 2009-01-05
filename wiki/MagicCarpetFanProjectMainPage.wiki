@@ -12,6 +12,11 @@ There are no screenshots yet
 = Contribute =
  * We need Milkshape 3D models for monsters from the game. The game has been tested to load models created with Milkshape 3D 1.8.2 but other models made with other Versions of Milkshape 3D are welcome also.
 
+= Credits =
+ * Song Ho Ahn http://www.songho.ca/ for its very good and very nicely working OpenGL Win32 Api Gui article and source code
+ * Brett Porter http://web.archive.org/web/20010408222059/http://rsn.gamedev.net/tutorials/ms3danim.asp for its good explanation of milkshape skeletal animation
+ * Bryan Turner http://www.gamasutra.com/features/20000403/turner_01.htm for his article and source code about his semi implementation (only does splits and no merges) of the roam algorithm
+
 = Documentation =
 
 = SVN =

@@ -1,4 +1,3 @@
-#pagename Magic Carpet Wiki Main Page
 #summary This is the main entry point to the wiki
 
 = Download =

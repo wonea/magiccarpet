@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="9.00"
 	Name="glWin"
 	ProjectGUID="{7576421F-07EA-4A04-BAE0-B11D3FE40D33}"
 	RootNamespace="glWin"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -41,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/D &quot;_CRT_SECURE_NO_DEPRECATE&quot;"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;_LIB;LOG4CPLUS_STATIC;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;GLUT_BUILDING_LIB"
+				PreprocessorDefinitions="_USRDLL;_LIB;_WINDOWS;WIN32;_DEBUG;LOG4CPLUS_STATIC;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;GLUT_BUILDING_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -63,8 +64,12 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="opengl32.lib glut32.lib glu32.lib glew32s.lib comctl32.lib log4cplusSD.lib"
 				LinkIncremental="2"
+				GenerateManifest="true"
+				ManifestFile="$(IntDir)\..\$(TargetFileName).manifest"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -84,9 +89,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -143,6 +145,8 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -164,9 +168,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -174,7 +175,7 @@
 	<References>
 		<ProjectReference
 			ReferencedProjectIdentifier="{87E2A139-92A9-46A3-B516-9C8707FF4A39}"
-			RelativePathToProject="..\..\wblib\wblib\wblib.vcproj"
+			RelativePathToProject="..\wblib\wblib\wblib.vcproj"
 		/>
 	</References>
 	<Files>

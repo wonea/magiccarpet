@@ -7,8 +7,8 @@
 #include <log4cplus/configurator.h>
 #include <log4cplus/fileappender.h>
 #include <iomanip>
-#include "../../wblib/wblib/ROAM.h"
-#include "../../wblib/wblib/FreeFlightCamera.h"
+#include "../wblib/wblib/ROAM.h"
+#include "../wblib/wblib/FreeFlightCamera.h"
 
 class ModelGL {
 public:

@@ -96,7 +96,8 @@ void ControllerGL::runThread() {
 
   try {
     //ms3dLoader.load("model.ms3d");
-    ms3dLoader.load("ant/ant01.ms3d");
+    //ms3dLoader.load("ant/ant01.ms3d");
+    ms3dLoader.load("Data/dwarf1.ms3d");
   } catch (std::ios_base::failure f) {
     std::cout << f.what() << std::endl;
   }

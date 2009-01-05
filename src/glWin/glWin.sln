@@ -1,22 +1,32 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glWin", "glWin.vcproj", "{7576421F-07EA-4A04-BAE0-B11D3FE40D33}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wblib", "..\..\wblib\wblib\wblib.vcproj", "{87E2A139-92A9-46A3-B516-9C8707FF4A39}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wblib", "..\wblib\wblib\wblib.vcproj", "{87E2A139-92A9-46A3-B516-9C8707FF4A39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_Unicode|Win32 = Debug_Unicode|Win32
 		Debug|Win32 = Debug|Win32
+		Release_Unicode|Win32 = Release_Unicode|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7576421F-07EA-4A04-BAE0-B11D3FE40D33}.Debug_Unicode|Win32.ActiveCfg = Debug|Win32
+		{7576421F-07EA-4A04-BAE0-B11D3FE40D33}.Debug_Unicode|Win32.Build.0 = Debug|Win32
 		{7576421F-07EA-4A04-BAE0-B11D3FE40D33}.Debug|Win32.ActiveCfg = Debug|Win32
 		{7576421F-07EA-4A04-BAE0-B11D3FE40D33}.Debug|Win32.Build.0 = Debug|Win32
+		{7576421F-07EA-4A04-BAE0-B11D3FE40D33}.Release_Unicode|Win32.ActiveCfg = Release|Win32
+		{7576421F-07EA-4A04-BAE0-B11D3FE40D33}.Release_Unicode|Win32.Build.0 = Release|Win32
 		{7576421F-07EA-4A04-BAE0-B11D3FE40D33}.Release|Win32.ActiveCfg = Release|Win32
 		{7576421F-07EA-4A04-BAE0-B11D3FE40D33}.Release|Win32.Build.0 = Release|Win32
+		{87E2A139-92A9-46A3-B516-9C8707FF4A39}.Debug_Unicode|Win32.ActiveCfg = Debug|Win32
+		{87E2A139-92A9-46A3-B516-9C8707FF4A39}.Debug_Unicode|Win32.Build.0 = Debug|Win32
 		{87E2A139-92A9-46A3-B516-9C8707FF4A39}.Debug|Win32.ActiveCfg = Debug|Win32
 		{87E2A139-92A9-46A3-B516-9C8707FF4A39}.Debug|Win32.Build.0 = Debug|Win32
+		{87E2A139-92A9-46A3-B516-9C8707FF4A39}.Release_Unicode|Win32.ActiveCfg = Release|Win32
+		{87E2A139-92A9-46A3-B516-9C8707FF4A39}.Release_Unicode|Win32.Build.0 = Release|Win32
 		{87E2A139-92A9-46A3-B516-9C8707FF4A39}.Release|Win32.ActiveCfg = Release|Win32
 		{87E2A139-92A9-46A3-B516-9C8707FF4A39}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection

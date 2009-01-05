@@ -21,8 +21,8 @@
 #include "ViewGL.h"
 #include "ModelGL.h"
 
-#include "../../wbLib/wbLib/MS3DLoader.h"
-#include "../../wblib/wblib/FreeFlightCamera.h"
+#include "../wbLib/wbLib/MS3DLoader.h"
+#include "../wblib/wblib/FreeFlightCamera.h"
 
 namespace Win
 {

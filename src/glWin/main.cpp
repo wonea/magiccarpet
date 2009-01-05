@@ -40,9 +40,9 @@ void InitConsoleStreams() {
     (long) GetStdHandle(STD_OUTPUT_HANDLE),
     _O_TEXT
     );
-  hf = _fdopen( hCrt, "w" );
+  hf = _fdopen(hCrt, "w");
   *stdout = *hf;
-  int i = setvbuf( stdout, NULL, _IONBF, 0 );
+  int i = setvbuf(stdout, NULL, _IONBF, 0);
 }
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR cmdArgs, int cmdShow) {

@@ -68,7 +68,7 @@ BEGIN
     LTEXT           "Red",IDC_STATIC,155,21,14,8
     LTEXT           "Green",IDC_STATIC,152,39,22,8
     LTEXT           "Blue",IDC_STATIC,155,57,14,8
-    PUSHBUTTON      "Button1",IDC_BUTTON1,188,7,65,19
+    PUSHBUTTON      "Button1",IDC_BUTTON1,187,13,65,19
 END
 
 

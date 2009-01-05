@@ -1,0 +1,7 @@
+#summary This is the main entry point to the wiki
+
+= Download =
+There are no downloads yet
+
+= SVN =
+== HOWTO: Check out repository ==

@@ -1,7 +1,29 @@
 #summary This is the main entry point to the wiki
 
+= Introduction =
+This wiki helps you to find your way around in this Magic Carpet Fan Project. You can learn about checking out the source code from SVN, downloading the installer, watch screenshots, how to contribute, read the documentation and you can follow important links.
+
 = Download =
 There are no downloads yet
 
+= Screenshots =
+There are no screenshots yet
+
+= Contribute =
+ * We need Milkshape 3D models for monsters from the game. The game has been tested to load models created with Milkshape 3D 1.8.2 but other models made with other Versions of Milkshape 3D are welcome also.
+
+= Documentation =
+
 = SVN =
-== HOWTO: Check out repository ==
+== What is SVN ==
+Source code and content of computer programs are stored in a so called repository, which automatically detects changes and performs versioning on different versions of the source files and the content files.
+
+The repository is used to store sources and means to compile the project. It does not store binary data created from the sources! For example, the svn stores the header files, source files and the makefiles or project and solution files of the C++ project. It does not store the compiled executable.
+
+The repository is used for work on the sources. If you want to play, you can download the installer and you do not need to work with the repository.
+
+The SVN software is used to maintain the repository and is running on one of the google servers hosting this project. You need a SVN client to access the SVN server. In a Windows environment, Tortoise SVN is used most often. All further descriptions use Tortoise SVN under Windows.
+
+== HOWTO: Check out the repository ==
+Download and install Tortoise SVN. Create a folder on your harddrive. The folder name does not play any role so lets call it magiccarpet. Open the contex menu on the magiccarpet folder and select SVN Checkout.
+

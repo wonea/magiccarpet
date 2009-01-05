@@ -41,4 +41,6 @@ Download log4cplus from http://sourceforge.net/projects/log4cplus/. Extract the 
 
 = Compilation Errors =
 == Cannot find manifest file == 
-Copy glWin.exe.manifest from the Debug folder one folder up into the glWin folder
+Stupid Solution: Copy glWin.exe.intermediate.manifest from the Debug folder one folder up into the glWin folder and rename it to glWin.exe.manifest.
+
+Better Solution:

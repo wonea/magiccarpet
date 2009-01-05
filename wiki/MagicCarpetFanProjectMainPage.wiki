@@ -37,4 +37,4 @@ Use https://magiccarpet.googlecode.com/svn/trunk/ as the server to check out fro
 Your SVN client will now transfer the complete project from the SVN server to the magiccarpet folder. You can then compile the project.
 
 = Compiling =
-Download log4cplus from http://sourceforge.net/projects/log4cplus/. Extract the archive and copy the folder into the same folder as the magiccarpet folder you created when you checked out the sources.
+Download log4cplus from http://sourceforge.net/projects/log4cplus/. Extract the archive and use Visual Studio to load the log4cplus.sln Solution stored in log4cplus-1.0.3-rc1\log4cplus-1.0.3-rc1\msvc8. Compile the static project called log4cplus_static. In the Debug/Static folder of the project, you will find log4cplusSD.lib after succesfull compilation. Copy this file to C:\Program Files\Microsoft Visual Studio 9.0\VC\lib (Adjust the path to meet your environment). Copy the folder log4cplus-1.0.3-rc1\log4cplus-1.0.3-rc1\include\log4cplus to C:\Program Files\Microsoft Visual Studio 9.0\VC\include (Adjust the path to meet your environment).

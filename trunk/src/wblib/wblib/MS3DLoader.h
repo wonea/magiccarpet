@@ -21,7 +21,7 @@ namespace wbLib {
 #	error you must byte-align these structures with the appropriate compiler directives
 #endif
 
-    struct MS3DHeader {
+    struct MS3D_Header {
       char id[10];
       int version;
     } PACK_STRUCT;
@@ -31,10 +31,10 @@ namespace wbLib {
 	    float location[3];
     };*/
 
-    struct MS3DVertex {
+    struct MS3D_Vertex {
 	    unsigned char flags;
 	    float vertex[3];
-	    char boneID;
+	    char boneID; // -1 = no bone
 	    unsigned char refCount;
     } PACK_STRUCT;
 
@@ -45,7 +45,7 @@ namespace wbLib {
     };*/
 
     // Triangle information
-    struct MS3DTriangle {
+    struct MS3D_Triangle {
 	    unsigned short flags;
 	    unsigned short vertexIndices[3];
 	    float vertexNormals[3][3];
@@ -61,7 +61,7 @@ namespace wbLib {
 	    int * triangleIndices;
     };*/
 
-    struct MS3DGroup {
+    struct MS3D_Group {
         unsigned char flags;                              // SELECTED | HIDDEN
         char * name;                           //
         unsigned short numTriangles;                       //
@@ -76,7 +76,7 @@ namespace wbLib {
 	    char * textureFilename;
     };*/
 
-    struct MS3DMaterial {
+    struct MS3D_Material {
         char            name[32];                           //
         float           ambient[4];                         //
         float           diffuse[4];                         //
@@ -88,6 +88,53 @@ namespace wbLib {
         char            texture[128];                        // texture.bmp
         char            alphamap[128];                       // alpha.bmp
     } PACK_STRUCT;
+
+    struct MS3D_Keyframe_Rot { // 16 bytes
+        float           time;                               // time in seconds
+        float           rotation[3];                        // x, y, z angles
+    } PACK_STRUCT;
+
+    struct MS3D_Keyframe_Pos { // 16 bytes
+        float           time;                               // time in seconds
+        float           position[3];                        // local position
+    } PACK_STRUCT;
+
+    struct MS3D_Joint {
+        unsigned char   flags;                              // SELECTED | DIRTY
+
+        char            name[32];                           //
+        char            parentName[32];                     //
+
+        float           rotation[3];                        // local reference matrix
+        float           position[3];
+
+        unsigned short  numKeyFramesRot;                    //
+        unsigned short  numKeyFramesTrans;                  //
+
+        MS3D_Keyframe_Rot * keyFramesRot;      // local animation matrices
+        MS3D_Keyframe_Pos * keyFramesTrans;  // local animation matrices
+    } PACK_STRUCT;
+
+    // This structure adds a index into the joint array onto the joint
+    // which is the parent joint of this joint
+    struct WB_MS3D_Joint {
+        unsigned char   flags;                              // SELECTED | DIRTY
+
+        char            name[32];                           //
+        char            parentName[32];                     //
+
+        float           rotation[3];                        // local reference matrix
+        float           position[3];
+
+        unsigned short  numKeyFramesRot;                    //
+        unsigned short  numKeyFramesTrans;                  //
+
+        int parentJoint; // index into joint array, -1 if no parent joint exists
+
+        MS3D_Keyframe_Rot * keyFramesRot;      // local animation matrices
+        MS3D_Keyframe_Pos * keyFramesTrans;  // local animation matrices
+    } PACK_STRUCT;
+
 
 // Default alignment
 #ifdef _MSC_VER
@@ -129,17 +176,25 @@ namespace wbLib {
     private:
       void performFileHandling(const std::string _md2FileName) throw (std::ios_base::failure);
       void parse() throw (std::ios_base::failure);
+      void findParentID();
 
     private:
       char * buffer;
       unsigned short numVertices;
-      MS3DVertex * vertices;
+      MS3D_Vertex * vertices;
       int numTriangles;
-      MS3DTriangle * triangles;
+      MS3D_Triangle * triangles;
       int numMeshes;
-      MS3DGroup * meshes;
+      MS3D_Group * meshes;
       int numMaterials;
-      MS3DMaterial * materials;
+      MS3D_Material * materials;
+      unsigned short numJoints;
+      WB_MS3D_Joint * joints;
+
+      float animationFPS;
+	    float currentTime;
+	    int totalFrames;
+      
     };
   }
 }

@@ -28,3 +28,5 @@ The SVN software is used to maintain the repository and is running on one of the
 Download and install Tortoise SVN. Create a folder on your harddrive. The folder name does not play any role so lets call it magiccarpet. Open the contex menu on the magiccarpet folder and select SVN Checkout.
 
 Use https://magiccarpet.googlecode.com/svn/trunk/ as the server to check out from and click the OK Button. A Dialog pops up requesting your credentials. Leave them blank for checking out anonymously or enter your credentials if you are contributing changes to the source code.
+
+Your SVN client will now transfer the complete project from the SVN server to the magiccarpet folder. You can then compile the project.

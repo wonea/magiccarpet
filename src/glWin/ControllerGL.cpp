@@ -92,48 +92,25 @@ void ControllerGL::runThread() {
   float oldX = (float)point.x;
   float oldY = (float)point.y;
 
-  wbLib::ms3d::MS3DLoader ms3dLoader;
-
-  try {
-    //ms3dLoader.load("Data/model.ms3d");
-    //ms3dLoader.load("Data/ant01.ms3d");
-    //ms3dLoader.load("Data/dwarf1.ms3d");
-    //ms3dLoader.load("Data/Cross.ms3d");
-    //ms3dLoader.load("Data/turtle1.ms3d");
-    ms3dLoader.load("Data/zombie02.ms3d");
-  } catch (std::ios_base::failure f) {
-    std::cout << f.what() << std::endl;
-  }
-  
-  //wbLib::Landscape landscape;
-  //int patchCount = 16;
-  //int mapSize = 1024;
-  //char * buffer;
-  //buffer = NULL;
-
+  //wbLib::ms3d::MS3DLoader ms3dLoader;
   //try {
-  //  int bufferSize = 0;
-  //  std::ifstream filestream;
-  //  
-	 // filestream.open(L"Height1024.raw", std::ios::in | std::ios::binary | std::ios::ate);
-	 // if (!filestream.is_open()) {
-  //    std::ios_base::failure f("Could not find file!");
-  //    throw f;
-	 // }
-	 // bufferSize = filestream.tellg();
-	 // filestream.seekg (0, std::ios::beg);
-	 // buffer = new char[bufferSize];
-	 // filestream.read(buffer, bufferSize);
-	 // if (!filestream.good()) {
-		//  delete[] buffer;
-		//  buffer = NULL;
-	 // }
-	 // filestream.close();
-  //} catch (std::ios_base::failure f) {    
-  //  //logger.log(log4cplus::INFO_LOG_LEVEL, L"File not found");
+  //  //ms3dLoader.load("Data/model.ms3d");
+  //  //ms3dLoader.load("Data/ant01.ms3d");
+  //  //ms3dLoader.load("Data/dwarf1.ms3d");
+  //  //ms3dLoader.load("Data/Cross.ms3d");
+  //  //ms3dLoader.load("Data/turtle1.ms3d");
+  //  ms3dLoader.load("Data/zombie02.ms3d");
+  //} catch (std::ios_base::failure f) {
+  //  std::cout << f.what() << std::endl;
   //}
+  
+  wbLib::Landscape landscape;
+  int patchCount = 16;
+  int mapSize = 1024;  
 
-  //landscape.init(mapSize, buffer, patchCount, &camera);
+  //std::ifstream filestream;
+
+  landscape.init(L"Data//Height1024.raw", patchCount, mapSize, &camera);
 
   model->init();
 
@@ -142,6 +119,8 @@ void ControllerGL::runThread() {
   model->setViewport(rect.right, rect.bottom);
 
   //unsigned int texObjID = wbLib::JPEGLoader::LoadJPEGTexture("Data//zombie.jpg");
+  unsigned int texObjID = wbLib::JPEGLoader::LoadJPEGTexture("Data//smiley120.jpg");
+  glBindTexture(GL_TEXTURE_2D, texObjID);
 
   while (loopFlag) {
     // yield for other threads
@@ -173,47 +152,47 @@ void ControllerGL::runThread() {
     camera.MouseRotate(deltaX, deltaY);
 
     //glutSolidSphere(1.0f, 5, 5);
-   // glBindTexture(GL_TEXTURE_2D, texObjID);
-   // glBegin(GL_QUADS);
-		 // // Front Face
-		 // glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Bottom Left Of The Texture and Quad
-		 // glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Bottom Right Of The Texture and Quad
-		 // glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Top Right Of The Texture and Quad
-		 // glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Top Left Of The Texture and Quad
-		 // // Back Face
-		 // glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Bottom Right Of The Texture and Quad
-		 // glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Top Right Of The Texture and Quad
-		 // glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	// Top Left Of The Texture and Quad
-		 // glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Bottom Left Of The Texture and Quad
-		 // // Top Face
-		 // glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Top Left Of The Texture and Quad
-		 // glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Bottom Left Of The Texture and Quad
-		 // glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Bottom Right Of The Texture and Quad
-		 // glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	// Top Right Of The Texture and Quad
-		 // // Bottom Face
-		 // glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Top Right Of The Texture and Quad
-		 // glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Top Left Of The Texture and Quad
-		 // glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Bottom Left Of The Texture and Quad
-		 // glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Bottom Right Of The Texture and Quad
-		 // // Right face
-		 // glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Bottom Right Of The Texture and Quad
-		 // glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	// Top Right Of The Texture and Quad
-		 // glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Top Left Of The Texture and Quad
-		 // glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Bottom Left Of The Texture and Quad
-		 // // Left Face
-		 // glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Bottom Left Of The Texture and Quad
-		 // glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Bottom Right Of The Texture and Quad
-		 // glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Top Right Of The Texture and Quad
-		 // glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Top Left Of The Texture and Quad
-	  //glEnd();
+    glBindTexture(GL_TEXTURE_2D, texObjID);
+    glBegin(GL_QUADS);
+		  // Front Face
+		  glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Bottom Left Of The Texture and Quad
+		  glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Bottom Right Of The Texture and Quad
+		  glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Top Right Of The Texture and Quad
+		  glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Top Left Of The Texture and Quad
+		  // Back Face
+		  glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Bottom Right Of The Texture and Quad
+		  glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Top Right Of The Texture and Quad
+		  glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	// Top Left Of The Texture and Quad
+		  glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Bottom Left Of The Texture and Quad
+		  // Top Face
+		  glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Top Left Of The Texture and Quad
+		  glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Bottom Left Of The Texture and Quad
+		  glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Bottom Right Of The Texture and Quad
+		  glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	// Top Right Of The Texture and Quad
+		  // Bottom Face
+		  glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Top Right Of The Texture and Quad
+		  glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Top Left Of The Texture and Quad
+		  glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Bottom Left Of The Texture and Quad
+		  glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Bottom Right Of The Texture and Quad
+		  // Right face
+		  glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Bottom Right Of The Texture and Quad
+		  glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	// Top Right Of The Texture and Quad
+		  glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Top Left Of The Texture and Quad
+		  glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Bottom Left Of The Texture and Quad
+		  // Left Face
+		  glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Bottom Left Of The Texture and Quad
+		  glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Bottom Right Of The Texture and Quad
+		  glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Top Right Of The Texture and Quad
+		  glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Top Left Of The Texture and Quad
+	  glEnd();
 
     //ms3dLoader.drawVertices();
     //ms3dLoader.drawTriangles();
     //ms3dLoader.drawGroups();
     //ms3dLoader.drawJoints();
     
-    ms3dLoader.advanceAnimation();
-    ms3dLoader.drawGroupsUsingJoints();
+    //ms3dLoader.advanceAnimation();
+    //ms3dLoader.drawGroupsUsingJoints();
     //ms3dLoader.drawJointsAnimated();
 
     //std::cout << "x: " << camera.pos.x << " z: " << camera.pos.z << std::endl;
@@ -222,9 +201,11 @@ void ControllerGL::runThread() {
     // the patches need to get a new tesselation. So their base triangles
     // need to be set reset to null pointers, to throw away the complete
     // binary triangle tree from the last frame
-    /*landscape.reset();
+    landscape.reset();
     landscape.tessellate();
-    landscape.render();*/
+    //landscape.render();
+    landscape.renderTexture();
+
     view->swapBuffers();
   }
 
@@ -232,8 +213,8 @@ void ControllerGL::runThread() {
   ::CloseHandle(threadHandle);
 
   model->cleanUp();
-  //landscape.cleanUp();
-  ms3dLoader.cleanUp();
+  landscape.cleanUp();
+  //ms3dLoader.cleanUp();
 }
 
 int ControllerGL::lButtonDown(WPARAM state, int x, int y) {

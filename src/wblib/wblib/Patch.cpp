@@ -443,6 +443,61 @@ void wbLib::Patch::render() {
 	glPopMatrix();
 }
 
+void wbLib::Patch::renderTexture() {
+	glPushMatrix();
+	
+	// translate the patch to the proper world coordinates
+	glTranslatef((float)x, 0.0f, (float)y);
+
+	glBegin(GL_TRIANGLES);
+		
+  // left base triangle of patch
+	recursRenderTexture(&baseLeft,
+    // left x,y
+		0,
+    patchSize,
+    // left texcoord s,t
+    0.0f,
+    0.0f,
+    // right x,y
+		patchSize,
+    0,
+    // right textcoord s,t
+    1.0f,
+    1.0f,
+    // apex x,y
+		0,
+    0,
+    // apex textcoord s,t
+    0.0f,
+    1.0f);
+	
+  // right base triangle of patch
+	recursRenderTexture(&baseRight,
+    // left x,y
+		patchSize,
+    0,
+    // left texcoord s,t
+    1.0f,
+    1.0f,
+    // right x,y
+		0,
+    patchSize,
+    // right texcoord s,t
+    0.0f,
+    0.0f,
+    // apex x,y
+		patchSize,
+    patchSize,
+    // apex texcoord s,t
+    1.0f,
+    0.0f);
+	
+	glEnd();
+	
+	glPopMatrix();
+}
+
 void wbLib::Patch::recursRender(TriTreeNode * tri, int leftX, int leftY, int rightX, int rightY, int apexX, int apexY) {
   // All non-leaf nodes have both children, so just check for one
 	if (tri->LeftChild)	{
@@ -523,6 +578,59 @@ void wbLib::Patch::recursRender(TriTreeNode * tri, int leftX, int leftY, int rig
 		glVertex3f((GLfloat) apexX,
 			(GLfloat) apexZ,
 			(GLfloat) apexY);
+	}
+}
+
+void wbLib::Patch::recursRenderTexture(wbLib::TriTreeNode * _tri,
+      int _leftX, 
+      int _leftY,
+      float _leftS,
+      float _leftT,
+      int _rightX, 
+      int _rightY, 
+      float _rightS,
+      float _rightT,
+      int _apexX, 
+      int _apexY,
+      float _apexS,
+      float _apexT) 
+{
+  // All non-leaf nodes have both children, so just check for one
+	if (_tri->LeftChild)	{
+		int centerX = (_leftX + _rightX)>>1;	// Compute X coordinate of center of Hypotenuse
+		int centerY = (_leftY + _rightY)>>1;	// Compute Y coord...
+
+    float centerS = _leftS + ((_rightS - _leftS) / 2.0f);
+    float centerT = _leftT + ((_rightT - _leftT) / 2.0f);
+
+		recursRenderTexture(_tri->LeftChild, _apexX, _apexY, _apexS, _apexT, _leftX, _leftY, _leftS, _leftT, centerX, centerY, centerS, centerT);
+		recursRenderTexture(_tri->RightChild, _rightX, _rightY, _rightS, _rightT, _apexX, _apexY, _apexS, _apexT, centerX, centerY, centerS, centerT);
+	}	else {
+    // A leaf node!  Output a triangle to be rendered.
+		// Actual number of rendered triangles...
+		//gNumTrisRendered++;
+
+		float leftZ  = heightMapOffset[(_leftY  * mapSize) + _leftX ];
+		float rightZ = heightMapOffset[(_rightY * mapSize) + _rightX];
+		float apexZ  = heightMapOffset[(_apexY  * mapSize) + _apexX ];
+
+		// Output the LEFT VERTEX for the triangle
+    glTexCoord2f(_leftS, _leftT);
+		glVertex3f((GLfloat) _leftX,
+			(GLfloat) leftZ,
+			(GLfloat) _leftY);
+
+		// Output the RIGHT VERTEX for the triangle
+    glTexCoord2f(_rightS, _rightT);
+		glVertex3f((GLfloat) _rightX,
+			(GLfloat) rightZ,
+			(GLfloat) _rightY);
+
+		// Output the APEX VERTEX for the triangle
+    glTexCoord2f(_apexS, _apexT);
+		glVertex3f((GLfloat) _apexX,
+			(GLfloat) apexZ,
+			(GLfloat) _apexY);
 	}
 }
 

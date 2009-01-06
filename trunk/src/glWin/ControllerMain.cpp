@@ -27,12 +27,12 @@ ControllerMain::ControllerMain(ModelGL* _model) {
 }
 
 int ControllerMain::keyDown(int key, LPARAM lParam) {
-  std::cout << "keyDown in MainController" << std::endl;
+  //std::cout << "keyDown in MainController" << std::endl;
   return 0;
 }
 
 int ControllerMain::keyUp(int key, LPARAM lParam) {
-  std::cout << "keyUp in MainController" << std::endl;
+  //std::cout << "keyUp in MainController" << std::endl;
   return 0;
 }
 

@@ -155,7 +155,7 @@ wbLib::Matrix4X4f wbLib::Matrix4X4f::operator-(const wbLib::Matrix4X4f & rhs) co
 
 wbLib::Matrix4X4f wbLib::Matrix4X4f::operator*(const wbLib::Matrix4X4f & rhs) const
 {
-	//Optimise for matrices in which bottom row is (0, 0, 0, 1) in both matrices
+	// Optimise for matrices in which bottom row is (0, 0, 0, 1) in both matrices
 	if(	entries[3]==0.0f && entries[7]==0.0f && entries[11]==0.0f && entries[15]==1.0f	&&
 		rhs.entries[3]==0.0f && rhs.entries[7]==0.0f &&
 		rhs.entries[11]==0.0f && rhs.entries[15]==1.0f)
@@ -178,7 +178,7 @@ wbLib::Matrix4X4f wbLib::Matrix4X4f::operator*(const wbLib::Matrix4X4f & rhs) co
 							1.0f);
 	}
 
-	//Optimise for when bottom row of 1st matrix is (0, 0, 0, 1)
+	// Optimise for when bottom row of 1st matrix is (0, 0, 0, 1)
 	if(	entries[3]==0.0f && entries[7]==0.0f && entries[11]==0.0f && entries[15]==1.0f)
 	{
 		return wbLib::Matrix4X4f(	entries[0]*rhs.entries[0]+entries[4]*rhs.entries[1]+entries[8]*rhs.entries[2]+entries[12]*rhs.entries[3],
@@ -199,7 +199,7 @@ wbLib::Matrix4X4f wbLib::Matrix4X4f::operator*(const wbLib::Matrix4X4f & rhs) co
 							rhs.entries[15]);
 	}
 
-	//Optimise for when bottom row of 2nd matrix is (0, 0, 0, 1)
+	// Optimise for when bottom row of 2nd matrix is (0, 0, 0, 1)
 	if(	rhs.entries[3]==0.0f && rhs.entries[7]==0.0f &&
 		rhs.entries[11]==0.0f && rhs.entries[15]==1.0f)
 	{
@@ -239,6 +239,9 @@ wbLib::Matrix4X4f wbLib::Matrix4X4f::operator*(const wbLib::Matrix4X4f & rhs) co
 						entries[3]*rhs.entries[12]+entries[7]*rhs.entries[13]+entries[11]*rhs.entries[14]+entries[15]*rhs.entries[15]);
 }
 
+/** 
+ * Multiplies every matrix element by a float value
+ */
 wbLib::Matrix4X4f wbLib::Matrix4X4f::operator*(const float rhs) const
 {
 	return wbLib::Matrix4X4f(	entries[0]*rhs,
@@ -368,6 +371,22 @@ wbLib::Vector4f wbLib::Matrix4X4f::operator*(const Vector4f rhs) const
 					+	entries[15]*rhs.w);
 }
 
+wbLib::Vector3f wbLib::Matrix4X4f::operator*(const wbLib::Vector3f rhs) const {
+  
+		return Vector3f(entries[0]*rhs.x
+					+	entries[4]*rhs.y
+					+	entries[8]*rhs.z,
+
+						entries[1]*rhs.x
+					+	entries[5]*rhs.y
+					+	entries[9]*rhs.z,
+
+						entries[2]*rhs.x
+					+	entries[6]*rhs.y
+					+	entries[10]*rhs.z);
+	
+}
+
 wbLib::Vector3f wbLib::Matrix4X4f::GetRotatedVector3f(const Vector3f & rhs) const
 {
 	return Vector3f(entries[0]*rhs.x + entries[4]*rhs.y + entries[8]*rhs.z,
@@ -381,25 +400,36 @@ wbLib::Vector3f wbLib::Matrix4X4f::GetRotatedVector3f(const Vector3f & rhs) cons
 	return VECTOR3D(entries[0]*rhs.x + entries[4]*rhs.y + entries[8]*rhs.z,
 					entries[1]*rhs.x + entries[5]*rhs.y + entries[9]*rhs.z,
 					entries[2]*rhs.x + entries[6]*rhs.y + entries[10]*rhs.z);
+}*/
+
+void wbLib::Matrix4X4f::InverseRotateVector3f(float * _coords) const {
+  _coords[0] = entries[0] * _coords[0] + entries[1] * _coords[1] + entries[2] * _coords[2];
+  _coords[1] = entries[4] * _coords[0] + entries[5] * _coords[1] + entries[6] * _coords[2];
+	_coords[2] = entries[8] * _coords[0] + entries[9] * _coords[1] + entries[10] * _coords[2];
 }
 
-VECTOR3D wbLib::Matrix4X4f::GetInverseRotatedVector3D(const VECTOR3D & rhs) const
+wbLib::Vector3f wbLib::Matrix4X4f::GetInverseRotatedVector3f(const wbLib::Vector3f & rhs) const
 {
 	//rotate by transpose:
-	return VECTOR3D(entries[0]*rhs.x + entries[1]*rhs.y + entries[2]*rhs.z,
+	return Vector3f(entries[0]*rhs.x + entries[1]*rhs.y + entries[2]*rhs.z,
 					entries[4]*rhs.x + entries[5]*rhs.y + entries[6]*rhs.z,
 					entries[8]*rhs.x + entries[9]*rhs.y + entries[10]*rhs.z);
 }
 
-VECTOR3D wbLib::Matrix4X4f::GetTranslatedVector3D(const VECTOR3D & rhs) const
-{
-	return VECTOR3D(rhs.x+entries[12], rhs.y+entries[13], rhs.z+entries[14]);
+void wbLib::Matrix4X4f::InverseTranslateVector3f(float * _coords) const {
+  _coords[0] = _coords[0] - entries[12];
+  _coords[1] = _coords[1] - entries[13];
+  _coords[2] = _coords[2] - entries[14];
 }
 
-VECTOR3D wbLib::Matrix4X4f::GetInverseTranslatedVector3D(const VECTOR3D & rhs) const
+wbLib::Vector3f wbLib::Matrix4X4f::GetTranslatedVector3f(const Vector3f & _rhs) const {
+	return Vector3f(_rhs.x + entries[12], _rhs.y + entries[13], _rhs.z + entries[14]);
+}
+
+wbLib::Vector3f wbLib::Matrix4X4f::GetInverseTranslatedVector3f(const Vector3f & rhs) const
 {
-	return VECTOR3D(rhs.x-entries[12], rhs.y-entries[13], rhs.z-entries[14]);
-}*/
+	return Vector3f(rhs.x-entries[12], rhs.y-entries[13], rhs.z-entries[14]);
+}
 
 void wbLib::Matrix4X4f::Invert(void)
 {
@@ -589,14 +619,23 @@ wbLib::Matrix4X4f wbLib::Matrix4X4f::GetAffineInverseTranspose(void) const
 						0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-/*void wbLib::Matrix4X4f::SetTranslation(const VECTOR3D & translation)
+/**
+ * param _translation - a float vector containing three elements x, y and z
+ */
+void wbLib::Matrix4X4f::SetTranslation(const float * _translation) {
+	LoadIdentity();
+
+	SetTranslationPart(_translation);
+}
+
+void wbLib::Matrix4X4f::SetTranslation(const wbLib::Vector3f & translation)
 {
 	LoadIdentity();
 
 	SetTranslationPart(translation);
 }
 
-void wbLib::Matrix4X4f::SetScale(const VECTOR3D & scaleFactor)
+/*void wbLib::Matrix4X4f::SetScale(const VECTOR3D & scaleFactor)
 {
 	LoadIdentity();
 
@@ -668,11 +707,19 @@ void wbLib::Matrix4X4f::SetRotationZ(const double angle)
 	entries[5]=entries[0];
 }
 
-void wbLib::Matrix4X4f::SetRotationEuler(const double angleX, const double angleY, const double angleZ)
+/**
+ * Clears the current matrix by setting it to the identity matrix and
+ * afterwards formulates a rotation matrix. This for example throws
+ * away the translational part of the present matrix.
+ * _angleX, _angleY and _angleZ need to be specified in degrees
+ */
+void wbLib::Matrix4X4f::SetRotationEuler(const double _angleX, 
+                                         const double _angleY, 
+                                         const double _angleZ)
 {
 	LoadIdentity();
 
-	SetRotationPartEuler(angleX, angleY, angleZ);
+	SetRotationPartEuler(_angleX, _angleY, _angleZ);
 }
 
 void wbLib::Matrix4X4f::SetPerspective(	float left, float right, float bottom,
@@ -746,30 +793,42 @@ void wbLib::Matrix4X4f::SetOrtho(	float left, float right, float bottom,
 	entries[14]=-(f+n)/(f-n);
 }
 
-/*void wbLib::Matrix4X4f::SetTranslationPart(const VECTOR3D & translation)
+void wbLib::Matrix4X4f::SetTranslationPart(const Vector3f & translation)
 {
 	entries[12]=translation.x;
 	entries[13]=translation.y;
 	entries[14]=translation.z;
-}*/
+}
 
-void wbLib::Matrix4X4f::SetRotationPartEuler(const double angleX, const double angleY, const double angleZ)
+void wbLib::Matrix4X4f::SetTranslationPart(const float * _translation) {
+  entries[12] = _translation[0];
+	entries[13] = _translation[1];
+	entries[14] = _translation[2];
+}
+
+/**
+ * Does not clear the present matrix to the identity matrix
+ * _angleX, _angleY and _angleZ need to be specified in degrees
+ */
+void wbLib::Matrix4X4f::SetRotationPartEuler(const double _angleX, 
+                                             const double _angleY, 
+                                             const double _angleZ)
 {
-	double cr = cos( M_PI*angleX/180 );
-	double sr = sin( M_PI*angleX/180 );
-	double cp = cos( M_PI*angleY/180 );
-	double sp = sin( M_PI*angleY/180 );
-	double cy = cos( M_PI*angleZ/180 );
-	double sy = sin( M_PI*angleZ/180 );
+	double cr = cos(M_PI * _angleX / 180);
+	double sr = sin(M_PI * _angleX / 180);
+	double cp = cos(M_PI * _angleY / 180);
+	double sp = sin(M_PI * _angleY / 180);
+	double cy = cos(M_PI * _angleZ / 180);
+	double sy = sin(M_PI * _angleZ / 180);
 
 	entries[0] = ( float )( cp*cy );
 	entries[1] = ( float )( cp*sy );
 	entries[2] = ( float )( -sp );
 
-	double srsp = sr*sp;
-	double crsp = cr*sp;
+	double srsp = sr * sp;
+	double crsp = cr * sp;
 
-	entries[4] = ( float )( srsp*cy-cr*sy );
+	entries[4] = ( float )( srsp * cy - cr * sy );
 	entries[5] = ( float )( srsp*sy+cr*cy );
 	entries[6] = ( float )( sr*cp );
 

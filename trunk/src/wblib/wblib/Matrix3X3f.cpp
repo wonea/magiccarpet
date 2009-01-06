@@ -1,7 +1,9 @@
 #include "Matrix3X3f.h"
 
-// Precomputes values for a 90 degree rotation matrix around the z axis
-// if parameter _plus is true, the matrix rotates +90 degrees, -90 otherwise
+/**
+ * Precomputes values for a 90 degree rotation matrix around the z axis
+ * if parameter _plus is true, the matrix rotates +90 degrees, -90 otherwise
+ */
 void wbLib::Matrix3f::SetXRot(bool _plus) {
 	if (_plus) {
 		elements[0][0] = 1.0f;
@@ -30,8 +32,10 @@ void wbLib::Matrix3f::SetXRot(bool _plus) {
 	}
 }
 
-// Precomputes values for a 90 degree rotation matrix around the z axis
-// if parameter _plus is true, the matrix rotates +90 degrees, -90 otherwise
+/**
+ * Precomputes values for a 90 degree rotation matrix around the z axis
+ * if parameter _plus is true, the matrix rotates +90 degrees, -90 otherwise
+ */
 void wbLib::Matrix3f::SetYRot(bool _plus) {
 	if (_plus) {
 		elements[0][0] = 0.0f;
@@ -60,8 +64,10 @@ void wbLib::Matrix3f::SetYRot(bool _plus) {
 	}
 }
 
-// Precomputes values for a 90 degree rotation matrix around the z axis
-// if parameter _plus is true, the matrix rotates +90 degrees, -90 otherwise
+/**
+ * Precomputes values for a 90 degree rotation matrix around the z axis
+ * if parameter _plus is true, the matrix rotates +90 degrees, -90 otherwise
+ */
 void wbLib::Matrix3f::SetZRot(bool _plus) {
 	if (_plus) {
 		elements[0][0] = 0.0f;

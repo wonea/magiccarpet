@@ -135,13 +135,13 @@ LRESULT CALLBACK Win::windowProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 
   case WM_KEYDOWN:
   case WM_SYSKEYDOWN:
-    std::cout << "key down in wndproc" << std::endl;
+    //std::cout << "key down in wndproc" << std::endl;
     returnValue = ctrl->keyDown((int)wParam, lParam);                       // keyCode, keyDetail
     break;
 
   case WM_KEYUP:
   case WM_SYSKEYUP:
-    std::cout << "key up in wndproc" << std::endl;
+    //std::cout << "key up in wndproc" << std::endl;
     returnValue = ctrl->keyUp((int)wParam, lParam);                         // keyCode, keyDetail
     break;
 

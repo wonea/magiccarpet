@@ -84,7 +84,7 @@ namespace Win
         ~Button() {}
 
         // change caption
-        void setText(const wchar_t* text) { SendMessage(handle, WM_SETTEXT, 0, (LPARAM)text); }
+        void setText(const wchar_t * text) { SendMessage(handle, WM_SETTEXT, 0, (LPARAM)text); }
     };
 
 

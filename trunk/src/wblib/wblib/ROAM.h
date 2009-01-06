@@ -9,6 +9,8 @@
 //#include <GL/glu.h>
 #include <GL/glew.h>
 #include <GL/glut.h>
+#include <iostream>
+#include <fstream>
 
 #include "FreeFlightCamera.h"
 
@@ -111,6 +113,7 @@ namespace wbLib {
 	  virtual void reset();
 	  virtual void tessellate();
 	  virtual void render();
+    virtual void renderTexture();
 	  virtual void computeVariance();
 
 	  // The recursive half of the Patch Class
@@ -132,6 +135,20 @@ namespace wbLib {
       int _rightY, 
       int _apexX, 
       int _apexY);
+
+    virtual void recursRenderTexture(TriTreeNode * _tri,
+      int _leftX, 
+      int _leftY,
+      float _leftS,
+      float _leftT,
+      int _rightX, 
+      int _rightY, 
+      float _rightS,
+      float _rightT,
+      int _apexX, 
+      int _apexY,
+      float _apexS,
+      float _apexT);
 
 	  virtual unsigned char	recursComputeVariance(int _leftX,
       int _leftY,
@@ -198,11 +215,15 @@ namespace wbLib {
 
 	  static TriTreeNode * allocateTri();
 
-	  virtual void init(int _mapSize, char * _heightMap, int _patchCount,
+    virtual void init(const wchar_t *_fileName, int _patchCount,
+  int _mapSize, wbLib::FreeFlightCamera * _camera);
+
+	  virtual void initROAM(int _mapSize, char * _heightMap, int _patchCount,
       wbLib::FreeFlightCamera * _camera);
 	  virtual void reset();
 	  virtual void tessellate();
 	  virtual void render();
+    virtual void renderTexture();
 
     void cleanUp();
 

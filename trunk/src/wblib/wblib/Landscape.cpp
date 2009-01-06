@@ -21,6 +21,44 @@ wbLib::Landscape::Landscape() {
   scaleZ = 1.0f;
 }
 
+void wbLib::Landscape::init(const wchar_t *_fileName, int _patchCount,
+  int _mapSize, wbLib::FreeFlightCamera * _camera) 
+{
+  camera = _camera;
+
+  int bufferSize = 0;
+  std::ifstream filestream;
+  char * buffer;
+
+  buffer = NULL;
+
+  try {
+    filestream.open(_fileName, std::ios::in | std::ios::binary | std::ios::ate);
+    if (!filestream.is_open()) {
+      std::ios_base::failure f("Could not find file!");
+      throw f;
+    }
+    bufferSize = filestream.tellg();
+    filestream.seekg (0, std::ios::beg);
+    buffer = new char[bufferSize];
+    filestream.read(buffer, bufferSize);
+    if (!filestream.good()) {
+      delete[] buffer;
+      buffer = NULL;
+    }
+    filestream.close();
+  } catch (std::ios_base::failure f) {    
+    //logger.log(log4cplus::INFO_LOG_LEVEL, L"File not found");
+    std::cout << __FILE__ << " " << __LINE__ << " " << L"File not found " << f.what() << std::endl;
+  }
+
+  try {
+    initROAM(_mapSize, buffer, _patchCount, camera);
+  } catch (std::bad_exception e) {
+    std::cout << __FILE__ << " " << __LINE__ << " " << e.what() << std::endl;
+  }
+}
+
 /**
  * Loads the height map into a buffer and prepares patches which 
  * control square subareas of the height map. Performs initial
@@ -31,7 +69,7 @@ wbLib::Landscape::Landscape() {
  * Param _patchCount - amount of patches per side (Total amount of
  *   patches = _patchCount * _patchCount)
  */
-void wbLib::Landscape::init(int _mapSize, char * _heightMap, 
+void wbLib::Landscape::initROAM(int _mapSize, char * _heightMap, 
   int _patchCount, wbLib::FreeFlightCamera * _camera) throw (std::bad_exception) {
 	Patch * patch = 0;
 
@@ -101,6 +139,10 @@ void wbLib::Landscape::cleanUp() {
  * need to know their neighbours for correct triangle splitting
  */
 void wbLib::Landscape::reset() {
+
+  if (NULL == patches) {
+    return;
+  }
 	//
 	// Perform simple visibility culling on entire patches.
 	//   - Define a triangle set back from the camera by one patch size, following
@@ -176,7 +218,12 @@ void wbLib::Landscape::reset() {
 /**
  * Create an approximate mesh of the landscape.
  */
-void wbLib::Landscape::tessellate() {	
+void wbLib::Landscape::tessellate() {
+
+  if (NULL == patches) {
+    return;
+  }
+
 	int count;
 	wbLib::Patch * patch = patches;
 
@@ -190,6 +237,9 @@ void wbLib::Landscape::tessellate() {
  * Scale terrain. Call render for each() patch. Adjust the frame variance.
  */
 void wbLib::Landscape::render() {
+  if (NULL == patches) {
+    return;
+  }
 	int nCount;
 	wbLib::Patch * patch = &(patches[0]);
 
@@ -217,6 +267,22 @@ void wbLib::Landscape::render() {
 	// Bounds checking.
 	//if (gFrameVariance < 0)
 	//	gFrameVariance = 0;
+}
+
+void wbLib::Landscape::renderTexture() {
+  if (NULL == patches) {
+    return;
+  }
+	int nCount;
+	wbLib::Patch * patch = &(patches[0]);
+
+	// Scale the terrain by the terrain scale specified at compile time.
+	glScalef(scaleX, scaleY, scaleZ);
+
+	for (nCount = 0; nCount < (patchCount * patchCount); nCount++, patch++)	{
+		//if (patch->isVisibile())
+			patch->renderTexture();
+	}
 }
 
 /**

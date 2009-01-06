@@ -4,6 +4,7 @@ wbLib::ms3d::MS3DLoader::MS3DLoader() {
   buffer = NULL;
   meshes = NULL;
   joints = NULL;
+  materials = NULL;
   cleanUp();
 }
 
@@ -14,6 +15,7 @@ wbLib::ms3d::MS3DLoader::MS3DLoader(const std::string _fileName) {
   buffer = NULL;
   meshes = NULL;
   joints = NULL;
+  materials = NULL;
 	cleanUp();
 
   performFileHandling(_fileName);
@@ -27,6 +29,7 @@ void wbLib::ms3d::MS3DLoader::load(const std::string _fileName) {
   buffer = NULL;
   meshes = NULL;
   joints = NULL;
+  materials = NULL;
 	cleanUp();
 
   performFileHandling(_fileName);
@@ -139,6 +142,10 @@ void wbLib::ms3d::MS3DLoader::parse() throw (std::ios_base::failure) {
   std::cout << "Number of Meshes: " << numMeshes << std::endl;
 
   // read groups/meshes
+  // This has to be done dynamically in extra memory as
+  // the group stores a dynamic sized list of triangles 
+  // that are contained in this group and that share all
+  // the groups attributes
   meshes = new MS3D_Group[numMeshes];
   for (int i = 0; i < numMeshes; i++) {
     meshes[i].flags = *(unsigned char *)ptr;
@@ -153,6 +160,7 @@ void wbLib::ms3d::MS3DLoader::parse() throw (std::ios_base::failure) {
     ptr += sizeof(unsigned short);
     std::cout << "num triangles: " << meshes[i].numTriangles << std::endl;
 
+    // This is the part, that makes the structure dynamic in size
     meshes[i].triangleIndices = (unsigned short *)ptr;
     ptr += (sizeof(unsigned short) * meshes[i].numTriangles);
 
@@ -167,9 +175,44 @@ void wbLib::ms3d::MS3DLoader::parse() throw (std::ios_base::failure) {
   std::cout << "Number of Materials: " << numMaterials << std::endl;
 
   // set pointer onto materials
-  materials = (MS3D_Material *)ptr;
+  MS3D_Material * tempMaterials = (MS3D_Material *)ptr;
   // advance pointer
   ptr += (sizeof(MS3D_Material) * numMaterials);
+
+  materials = new WB_MS3D_Material[numMaterials];
+  for (int i = 0; i < numMaterials; i++) {
+    // copy material data from buffer to extra data space
+    memcpy(materials[i].ambient, tempMaterials->ambient, sizeof(float) * 4);
+		memcpy(materials[i].diffuse, tempMaterials->diffuse, sizeof(float) * 4);
+		memcpy(materials[i].specular, tempMaterials->specular, sizeof(float) * 4);
+		memcpy(materials[i].emissive, tempMaterials->emissive, sizeof(float)* 4);
+		materials[i].shininess = tempMaterials->shininess;
+    materials[i].transparency = tempMaterials->transparency;
+    
+    // try to create the texture, if the parser is not succesfull in doing so,
+    // -1 is stored instead of a valid texture object id, so the drawing code
+    // should skip using textures if it encounters a -1
+    materials[i].textureObjectID = -1;
+
+    std::cout << "Material " << i << " Texture: " << tempMaterials[i].texture << std::endl;
+
+    // DEBUG: use JPEGLoader to load zombie.jpg and assign texture object id
+    materials[i].textureObjectID = wbLib::JPEGLoader::LoadJPEGTexture("Data//zombie.jpg");
+    if (0 == materials[i].textureObjectID) {
+      // Loader returns 0 in case of error, we want to return -1
+      materials[i].textureObjectID = -1;
+
+      std::cout << __FILE__ << " " << __LINE__ << " error: couldn't open: "
+      << "zombie.jpg" << std::endl;
+    }
+  }
+
+  //// DEBUG
+  //WB_MS3D_Material * tempPtr = materials;
+  //for (int i = 0; i < numMaterials; i++) {
+  //  std::cout << "Material " << i << " Texture: " << tempPtr->texture << std::endl;
+  //  tempPtr++;
+  //}
 
   // read keyframer data
   animationFPS = *(float *)ptr;
@@ -232,8 +275,8 @@ void wbLib::ms3d::MS3DLoader::parse() throw (std::ios_base::failure) {
     std::cout << "Joint " << i << " numKeyFramesRot: " << joint->numKeyFramesRot << std::endl;
     std::cout << "Joint " << i << " numKeyFramesTrans: " << joint->numKeyFramesTrans << std::endl;*/
 
-    std::cout << joint->name << " rotation: (" << joint->rotation[0] << "|" << joint->rotation[1] << "|" << joint->rotation[2] << ")" << std::endl;
-    std::cout << joint->name << " position: (" << joint->position[0] << "|" << joint->position[1] << "|" << joint->position[2] << ")" << std::endl;
+    //std::cout << joint->name << " rotation: (" << joint->rotation[0] << "|" << joint->rotation[1] << "|" << joint->rotation[2] << ")" << std::endl;
+    //std::cout << joint->name << " position: (" << joint->position[0] << "|" << joint->position[1] << "|" << joint->position[2] << ")" << std::endl;
 
     joints[i].flags = joint->flags;
     memcpy(joints[i].name, joint->name, 32);
@@ -339,6 +382,16 @@ void wbLib::ms3d::MS3DLoader::setupJoints() {
     }
 	}
 
+  // This somehow replaces the vertex onto the center of mass around
+  // which their rotation has to occure. The advantage is that if it
+  // is not done here, it would have to be done every frame.
+  //
+  // What happens is that, the vertex is translated towards its the center of mass,
+  // the rotation is applied and after that, the vertex is translated onto its
+  // original position again.
+  //
+  // The first step is done here, so it does not have to be repeated every
+  // frame
 	for (int i = 0; i < numVertices; i++)	{
 		MS3D_Vertex & vertex = vertices[i];
 
@@ -737,7 +790,24 @@ void wbLib::ms3d::MS3DLoader::drawVertices() {
   glPushMatrix();
   glBegin(GL_POINTS);
   for (int i = 0; i < numVertices; i++) {
-    glVertex3f(vertices[i].vertex[0], vertices[i].vertex[1], vertices[i].vertex[2]);
+    //glVertex3f(vertices[i].vertex[0], vertices[i].vertex[1], vertices[i].vertex[2]);
+
+    if (vertices[i].boneID == -1) {
+			//glNormal3fv(tri->vertexNormals[k]);
+		  //glTexCoord2f(tri->s[k], tri->t[k]);
+      glVertex3fv(vertices[i].vertex);
+		}	else {
+      //glNormal3fv(tri->vertexNormals[k]);
+		  //glTexCoord2f(tri->s[k], tri->t[k]);
+
+      // undo the translation using the absolute matrix
+      const Matrix4X4f & matrix = joints[vertices[i].boneID].absolute;
+
+      Vector4f v(vertices[i].vertex[0], vertices[i].vertex[1], vertices[i].vertex[2], 1.0f);
+      Vector4f result = matrix * v;
+
+      glVertex3fv(result);
+    }
   }
   glEnd();
   glPopMatrix();
@@ -747,27 +817,77 @@ void wbLib::ms3d::MS3DLoader::drawTriangles() {
   glPushMatrix();
   glBegin(GL_TRIANGLES);
   for (int i = 0; i < numTriangles; i++) {
-    glVertex3f(vertices[triangles[i].vertexIndices[0]].vertex[0],
-      vertices[triangles[i].vertexIndices[0]].vertex[1],
-      vertices[triangles[i].vertexIndices[0]].vertex[2]);
 
-    glVertex3f(vertices[triangles[i].vertexIndices[1]].vertex[0],
-      vertices[triangles[i].vertexIndices[1]].vertex[1],
-      vertices[triangles[i].vertexIndices[1]].vertex[2]);
+    const MS3D_Triangle * tri = &triangles[i];
 
-    glVertex3f(vertices[triangles[i].vertexIndices[2]].vertex[0],
-      vertices[triangles[i].vertexIndices[2]].vertex[1],
-      vertices[triangles[i].vertexIndices[2]].vertex[2]);
+    for (int k = 0; k < 3; k++) {
+			int index = tri->vertexIndices[k];
+
+      if (vertices[index].boneID == -1) {
+				//glNormal3fv(tri->vertexNormals[k]);
+			  //glTexCoord2f(tri->s[k], tri->t[k]);
+        glVertex3fv(vertices[index].vertex);
+			}	else {
+        //glNormal3fv(tri->vertexNormals[k]);
+			  //glTexCoord2f(tri->s[k], tri->t[k]);
+
+        // undo the translation using the absolute matrix
+        const Matrix4X4f & matrix = joints[vertices[index].boneID].absolute;
+
+        Vector4f v(vertices[index].vertex[0], vertices[index].vertex[1], vertices[index].vertex[2], 1.0f);
+        Vector4f result = matrix * v;
+
+        glVertex3fv(result);
+      }
+			
+		}
   }
   glEnd();
   glPopMatrix();
 }
 
+/**
+ * Draws all grous using their materials and textures. 
+ *
+ * In setupJoints() the vertices have been translated. This
+ * translation is undone here to position the vertices onto
+ * their correct locations
+ *
+ * Drawing groups is done in two steps. The first step sets
+ * up the groups material, the second step draws the geometry
+ * using the material.
+ *
+ * A group stores an index into the material array if it has a
+ * material attached, otherwise the index is -1.
+ */
 void wbLib::ms3d::MS3DLoader::drawGroups() {
   glPushMatrix();
 
-  for (int i = 0; i < numMeshes; i++ ) {
+  for (int i = 0; i < numMeshes; i++) {
 
+    // use material if the group has a material attached to it
+    int materialIndex = meshes[i].materialIndex;
+    // if material equals -1 there is no material to the group
+		if (materialIndex >= 0)	{
+			glMaterialfv(GL_FRONT, GL_AMBIENT, materials[materialIndex].ambient);
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, materials[materialIndex].diffuse);
+			glMaterialfv(GL_FRONT, GL_SPECULAR, materials[materialIndex].specular);
+			glMaterialfv(GL_FRONT, GL_EMISSION, materials[materialIndex].emissive);
+			glMaterialf(GL_FRONT, GL_SHININESS, materials[materialIndex].shininess);
+
+      // the parser stores a -1 into textureObjectID if it was not
+      // able to produce a texture
+			if (materials[materialIndex].textureObjectID > 0) {
+				glBindTexture(GL_TEXTURE_2D, materials[materialIndex].textureObjectID);
+				glEnable(GL_TEXTURE_2D);
+      }	else {
+				glDisable(GL_TEXTURE_2D);
+      }
+		}	else {
+			glDisable(GL_TEXTURE_2D);
+		}
+
+    // draw geometry
     glBegin(GL_TRIANGLES);
     for (int j = 0; j < meshes[i].numTriangles; j++) {
 
@@ -777,22 +897,24 @@ void wbLib::ms3d::MS3DLoader::drawGroups() {
       for (int k = 0; k < 3; k++) {
 				int index = tri->vertexIndices[k];
 
-				glNormal3fv(tri->vertexNormals[k]);
-				glTexCoord2f(tri->s[k], tri->t[k]);
-        glVertex3fv(vertices[index].vertex);
+        if (vertices[index].boneID == -1) {
+					glNormal3fv(tri->vertexNormals[k]);
+				  glTexCoord2f(tri->s[k], tri->t[k]);
+          glVertex3fv(vertices[index].vertex);
+				}	else {
+          glNormal3fv(tri->vertexNormals[k]);
+				  glTexCoord2f(tri->s[k], tri->t[k]);
+
+          // undo the translation using the absolute matrix
+          const Matrix4X4f & matrix = joints[vertices[index].boneID].absolute;
+
+          Vector4f v(vertices[index].vertex[0], vertices[index].vertex[1], vertices[index].vertex[2], 1.0f);
+          Vector4f result = matrix * v;
+
+          glVertex3fv(result);
+        }
+				
 			}
-
-      /*glVertex3f(vertices[triangles[i].vertexIndices[0]].vertex[0],
-        vertices[triangles[i].vertexIndices[0]].vertex[1],
-        vertices[triangles[i].vertexIndices[0]].vertex[2]);
-
-      glVertex3f(vertices[triangles[i].vertexIndices[1]].vertex[0],
-        vertices[triangles[i].vertexIndices[1]].vertex[1],
-        vertices[triangles[i].vertexIndices[1]].vertex[2]);
-
-      glVertex3f(vertices[triangles[i].vertexIndices[2]].vertex[0],
-        vertices[triangles[i].vertexIndices[2]].vertex[1],
-        vertices[triangles[i].vertexIndices[2]].vertex[2]);*/
     }
     glEnd();
   }
@@ -810,8 +932,10 @@ void wbLib::ms3d::MS3DLoader::cleanUp() {
     delete [] meshes;
     meshes = NULL;
   }
-  materials = NULL;
-  
+  if (NULL != materials) {
+    delete [] materials;
+    materials = NULL;
+  }  
 
   numVertices = 0;
   numTriangles = 0;

@@ -8,6 +8,7 @@
 #include <fstream>
 #include "Maths.h"
 #include "Timer.h"
+#include "JPEGLoader.h"
 
 namespace wbLib {
   namespace ms3d {
@@ -64,11 +65,11 @@ namespace wbLib {
     };*/
 
     struct MS3D_Group {
-        unsigned char flags;                              // SELECTED | HIDDEN
-        char * name;                           //
-        unsigned short numTriangles;                       //
-        unsigned short * triangleIndices;      // the groups group the triangles
-        char materialIndex;                      // -1 = no material
+        unsigned char flags; // SELECTED | HIDDEN
+        char * name; // exactly 32 byte
+        unsigned short numTriangles;
+        unsigned short * triangleIndices; // the groups triangles
+        char materialIndex; // -1 = no material, otherwise index into the material array
     } PACK_STRUCT;
 
     /*struct Material {
@@ -78,6 +79,11 @@ namespace wbLib {
 	    char * textureFilename;
     };*/
 
+    // A lot of the shebang in this structure does not interest us.
+    // We also need a new field which stores the OpenGL Texture Object ID
+    // if the material has a texture. So we use this structure only
+    // for parsing purposes as its size is important to advance the 
+    // buffer pointer correctly
     struct MS3D_Material {
         char            name[32];                           //
         float           ambient[4];                         //
@@ -91,6 +97,23 @@ namespace wbLib {
         char            alphamap[128];                       // alpha.bmp
     } PACK_STRUCT;
 
+    struct WB_MS3D_Material {
+        //char            name[32];                           //
+        float           ambient[4];                         //
+        float           diffuse[4];                         //
+        float           specular[4];                        //
+        float           emissive[4];                        //
+        float           shininess;                          // 0.0f - 128.0f
+        float           transparency;                       // 0.0f - 1.0f
+        //char            mode;                               // 0, 1, 2 is unused now
+        //char            texture[128];                        // texture.bmp
+        //char            alphamap[128];                       // alpha.bmp
+
+        // Is used to store the identifier that allows to
+        // bind the texture for OpenGL
+        int textureObjectID;
+    } PACK_STRUCT;
+
     struct MS3D_Keyframe_Rot { // 16 bytes
         float           time;                               // time in seconds
         float           rotation[3];                        // x, y, z angles
@@ -101,6 +124,10 @@ namespace wbLib {
         float           position[3];                        // local position
     } PACK_STRUCT;
 
+    // A lot of the shebang in this structure does not interest us.
+    // So we use this structure only
+    // for parsing purposes as its size is important to advance the 
+    // buffer pointer correctly 
     struct MS3D_Joint {
         unsigned char   flags;                              // SELECTED | DIRTY
 
@@ -165,15 +192,13 @@ namespace wbLib {
      *   std::cout << f.what() << std::endl;
      * }
      *
-     * 2. use model
+     * 2. use model:
+     * call ms3dLoader.advanceAnimation() in your message loop.
+     * After advanceAnimation() has been called, call drawGroupsUsingJoints()
+     * to draw the animated model
      *
      * 3. clean up
      * ms3dLoader.cleanUp();
-     *
-     * File Format Specification:
-     * 14 Byte MS3DHeader
-     * 2 Byte number of vertices
-     * 
      */
     class MS3DLoader {
     public:
@@ -206,7 +231,7 @@ namespace wbLib {
       int numMeshes;
       MS3D_Group * meshes;
       int numMaterials;
-      MS3D_Material * materials;
+      WB_MS3D_Material * materials;
       unsigned short numJoints;
       WB_MS3D_Joint * joints;
 

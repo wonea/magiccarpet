@@ -95,13 +95,15 @@ void ControllerGL::runThread() {
   wbLib::ms3d::MS3DLoader ms3dLoader;
 
   try {
-    //ms3dLoader.load("model.ms3d");
-    //ms3dLoader.load("ant/ant01.ms3d");
-    ms3dLoader.load("Data/dwarf1.ms3d");
+    //ms3dLoader.load("Data/model.ms3d");
+    //ms3dLoader.load("Data/ant01.ms3d");
+    //ms3dLoader.load("Data/dwarf1.ms3d");
+    //ms3dLoader.load("Data/Cross.ms3d");
+    //ms3dLoader.load("Data/turtle1.ms3d");
+    ms3dLoader.load("Data/zombie02.ms3d");
   } catch (std::ios_base::failure f) {
     std::cout << f.what() << std::endl;
   }
-
   
   //wbLib::Landscape landscape;
   //int patchCount = 16;
@@ -172,7 +174,12 @@ void ControllerGL::runThread() {
 
     //ms3dLoader.drawVertices();
     //ms3dLoader.drawTriangles();
-    ms3dLoader.drawGroups();
+    //ms3dLoader.drawGroups();
+    //ms3dLoader.drawJoints();
+    
+    ms3dLoader.advanceAnimation();
+    ms3dLoader.drawGroupsUsingJoints();
+    //ms3dLoader.drawJointsAnimated();
 
     //std::cout << "x: " << camera.pos.x << " z: " << camera.pos.z << std::endl;
     

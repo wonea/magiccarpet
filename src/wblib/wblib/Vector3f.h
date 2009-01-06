@@ -28,6 +28,7 @@ namespace wbLib {
   public:
     //Vector3f();
 	  Vector3f(float x = 0, float y = 0, float z = 0);
+    Vector3f(float * _coords);
 	  Vector3f CrossProduct(Vector3f other);
 	  float DotProduct(Vector3f other);
 	  Vector3f ScalarMult(float f);

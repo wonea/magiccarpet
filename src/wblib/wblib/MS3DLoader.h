@@ -6,6 +6,8 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include "Maths.h"
+#include "Timer.h"
 
 namespace wbLib {
   namespace ms3d {
@@ -118,21 +120,32 @@ namespace wbLib {
     // This structure adds a index into the joint array onto the joint
     // which is the parent joint of this joint
     struct WB_MS3D_Joint {
-        unsigned char   flags;                              // SELECTED | DIRTY
+        unsigned char   flags; // SELECTED | DIRTY
 
-        char            name[32];                           //
-        char            parentName[32];                     //
+        char            name[32];
+        char            parentName[32];
 
-        float           rotation[3];                        // local reference matrix
-        float           position[3];
+        // local reference matrix, reformulated as matrix and
+        // concatenated to the parent joints
+        // absolute matrix gives the joints absolute position
+        // and rotation (Every keyframe uses these as base reference.
+        // Is this true !?!)
+        float           rotation[3]; // stores the local rotation
+        float           position[3]; // stores the local translation
 
-        unsigned short  numKeyFramesRot;                    //
-        unsigned short  numKeyFramesTrans;                  //
+        unsigned short  numKeyFramesRot;
+        unsigned short  numKeyFramesTrans;
+
+        int currentTranslationKeyframe;
+        int currentRotationKeyframe;
+			  Matrix4X4f final;
 
         int parentJoint; // index into joint array, -1 if no parent joint exists
+        Matrix4X4f relative; // gives relative rotation and position. Used to get from parent joint to this joint
+        Matrix4X4f absolute; // matrix which translates (0|0|0) to this joints position and rotation
 
-        MS3D_Keyframe_Rot * keyFramesRot;      // local animation matrices
-        MS3D_Keyframe_Pos * keyFramesTrans;  // local animation matrices
+        MS3D_Keyframe_Rot * keyFramesRot; // local animation matrices
+        MS3D_Keyframe_Pos * keyFramesTrans; // local animation matrices
     } PACK_STRUCT;
 
 
@@ -172,11 +185,17 @@ namespace wbLib {
       void drawVertices();
       void drawTriangles();
       void drawGroups();
+      void drawJoints();
+      void drawJointsAnimated();
+      void drawGroupsUsingJoints();
+      void advanceAnimation();
 
     private:
       void performFileHandling(const std::string _md2FileName) throw (std::ios_base::failure);
       void parse() throw (std::ios_base::failure);
       void findParentID();
+      void setupJoints();
+      void restart();
 
     private:
       char * buffer;
@@ -194,7 +213,8 @@ namespace wbLib {
       float animationFPS;
 	    float currentTime;
 	    int totalFrames;
-      
+
+      wbLib::Timer timer;      
     };
   }
 }

@@ -54,42 +54,48 @@ namespace wbLib {
 	  bool operator==(const wbLib::Matrix4X4f & rhs) const;
 	  bool operator!=(const wbLib::Matrix4X4f & rhs) const;
 
-	  //self-add etc
+	  // self-add etc
 	  void operator+=(const wbLib::Matrix4X4f & rhs);
 	  void operator-=(const wbLib::Matrix4X4f & rhs);
 	  void operator*=(const wbLib::Matrix4X4f & rhs);
 	  void operator*=(const float rhs);
 	  void operator/=(const float rhs);
 
-	  //unary operators
+	  // unary operators
 	  wbLib::Matrix4X4f operator-(void) const;
 	  wbLib::Matrix4X4f operator+(void) const {return (*this);}
   	
-	  //multiply a vector by this matrix
+	  // multiply a vector by this matrix
 	  Vector4f operator*(const Vector4f rhs) const;
+    Vector3f operator*(const Vector3f rhs) const;
 
-	  //rotate a 3d vector by rotation part
+	  // rotate a 3d vector by rotation part
 	  //void RotateVector3D(VECTOR3D & rhs) const
 	  //{rhs=GetRotatedVector3D(rhs);}
 
-	  //void InverseRotateVector3D(VECTOR3D & rhs) const
-	  //{rhs=GetInverseRotatedVector3D(rhs);}
+	  void InverseRotateVector3f(Vector3f & rhs) const { 
+      rhs = GetInverseRotatedVector3f(rhs);
+    }
+
+    void InverseRotateVector3f(float * _coords) const;
 
     Vector3f GetRotatedVector3f(const Vector3f & rhs) const;
 	  //VECTOR3D GetRotatedVector3D(const VECTOR3D & rhs) const;
-	  //VECTOR3D GetInverseRotatedVector3D(const VECTOR3D & rhs) const;
+	  Vector3f GetInverseRotatedVector3f(const Vector3f & rhs) const;
 
 	  //translate a 3d vector by translation part
 	  //void TranslateVector3D(VECTOR3D & rhs) const
 	  //{rhs=GetTranslatedVector3D(rhs);}
 
-	  //void InverseTranslateVector3D(VECTOR3D & rhs) const
-	  //{rhs=GetInverseTranslatedVector3D(rhs);}
+	  void InverseTranslateVector3f(Vector3f & rhs) const {
+      rhs = GetInverseTranslatedVector3f(rhs);
+    }
+    void InverseTranslateVector3f(float * _coords) const;
   	
-	  //VECTOR3D GetTranslatedVector3D(const VECTOR3D & rhs) const;
-	  //VECTOR3D GetInverseTranslatedVector3D(const VECTOR3D & rhs) const;
+	  Vector3f GetTranslatedVector3f(const Vector3f & _rhs) const;
+	  Vector3f GetInverseTranslatedVector3f(const Vector3f & rhs) const;
 
-	  //Other methods
+	  // Other methods
 	  void Invert(void);
 	  wbLib::Matrix4X4f GetInverse(void) const;
 	  void Transpose(void);
@@ -97,14 +103,15 @@ namespace wbLib {
 	  void InvertTranspose(void);
 	  wbLib::Matrix4X4f GetInverseTranspose(void) const;
 
-	  //Inverse of a rotation/translation only matrix
+	  // Inverse of a rotation/translation only matrix
 	  void AffineInvert(void);
 	  wbLib::Matrix4X4f GetAffineInverse(void) const;
 	  void AffineInvertTranspose(void);
 	  wbLib::Matrix4X4f GetAffineInverseTranspose(void) const;
 
-	  //set to perform an operation on space - removes other entries
-	  //void SetTranslation(const VECTOR3D & translation);
+	  // Set to perform an operation on space - removes other entries
+	  void SetTranslation(const Vector3f & translation);
+    void SetTranslation(const float * _translation);
 	  //void SetScale(const VECTOR3D & scaleFactor);
 	  void SetUniformScale(const float scaleFactor);
 	  //void SetRotationAxis(const double angle, const VECTOR3D & axis);
@@ -117,7 +124,8 @@ namespace wbLib {
 	  void SetOrtho(float left, float right, float bottom, float top, float n, float f);
 
 	  //set parts of the matrix
-	  //void SetTranslationPart(const VECTOR3D & translation);
+	  void SetTranslationPart(const Vector3f & translation);
+    void SetTranslationPart(const float * translation);
 	  void SetRotationPartEuler(const double angleX, const double angleY, const double angleZ);
 	  /*void SetRotationPartEuler(const VECTOR3D & rotations)
 	  {

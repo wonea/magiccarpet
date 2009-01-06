@@ -27,6 +27,10 @@ namespace wbLib {
 	  wbLib::Vector4f(void)	:	x(0.0f), y(0.0f), z(0.0f), w(0.0f)
 	  {}
 
+    Vector4f(float newX, float newY, float newZ)	
+		  :	x(newX), y(newY), z(newZ), w(1)
+	  {}
+
 	  Vector4f(float newX, float newY, float newZ, float newW)	
 		  :	x(newX), y(newY), z(newZ), w(newW)
 	  {}

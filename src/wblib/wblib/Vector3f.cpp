@@ -12,6 +12,12 @@ wbLib::Vector3f::Vector3f(float x, float y, float z) {
 	this->z = z;
 }
 
+wbLib::Vector3f::Vector3f(float * _coords) {
+  this->x = _coords[0];
+	this->y = _coords[1];
+	this->z = _coords[2];
+}
+
 wbLib::Vector3f wbLib::Vector3f::CrossProduct(Vector3f other) {
 	return Vector3f(
 		(this->y*other.z) - (this->z*other.y),

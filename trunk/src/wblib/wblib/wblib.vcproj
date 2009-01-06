@@ -61,6 +61,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="libjpeg.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -160,6 +161,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\JPEGLoader.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Landscape.cpp"
 				>
 			</File>
@@ -223,6 +228,10 @@
 			</File>
 			<File
 				RelativePath=".\HeightMapLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\JPEGLoader.h"
 				>
 			</File>
 			<File

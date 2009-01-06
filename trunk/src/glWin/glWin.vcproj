@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib glut32.lib glu32.lib glew32s.lib comctl32.lib log4cplusSD.lib"
+				AdditionalDependencies="opengl32.lib glut32.lib glu32.lib glew32s.lib comctl32.lib log4cplusSD.lib libjpeg.lib"
 				LinkIncremental="2"
 				GenerateManifest="true"
 				ManifestFile="$(IntDir)\..\$(TargetFileName).manifest"

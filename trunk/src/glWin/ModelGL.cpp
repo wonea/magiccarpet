@@ -77,10 +77,14 @@ void ModelGL::init() {
   //glEnable(GL_CULL_FACE);
   //glEnable(GL_BLEND);
 
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glEnable(GL_TEXTURE_2D);
+
+  //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   // track material ambient and diffuse from surface color, call it before glEnable(GL_COLOR_MATERIAL)
-  glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+  //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
   //glEnable(GL_COLOR_MATERIAL);
 
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

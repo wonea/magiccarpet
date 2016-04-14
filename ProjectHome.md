@@ -1,0 +1,3 @@
+Magic Carpet is a Bullfrog game from the 90s which still has a fanbase. The player travels through the netherworlds flying on it´s magic carpet, shooting enemys and battling other wizzards scoring mana. He creates, develops and defends a castle to store its mana in. Mana is energy which allows the player to cast spells. During the missions, the player learns more and more spells which allows for interesting battles between him, the creeps and other magicians.
+
+Since the overall game design isn´t too complicated, it lends itself well to a fan project. This project tries to create a Magic Carpet clone using C++, OpenGL and Win32 Api.
